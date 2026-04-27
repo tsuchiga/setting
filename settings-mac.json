@@ -1,0 +1,113 @@
+{
+  "env": {
+    "CLAUDE_CODE_MAX_OUTPUT_TOKENS": "64000",
+    "MAX_MCP_OUTPUT_TOKENS": "40000",
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
+  "permissions": {
+    "deny": [
+      "Bash(rm -rf:*)",
+      "Bash(rm -fr:*)",
+      "Bash(rm -r -f:*)",
+      "Bash(rm -f -r:*)",
+      "Bash(sudo rm:*)"
+    ],
+    "ask": [
+      "Bash(git reset --hard:*)",
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(git clean:*)"
+    ],
+    "defaultMode": "bypassPermissions"
+  },
+  "model": "sonnet",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/auto-format.sh",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "permission_prompt|idle_prompt|elicitation_dialog",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "osascript -e 'display notification \"Claude Codeが確認を求めています\" with title \"Claude Code\"'",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "osascript -e 'display notification \"Claude Codeの処理が完了しました\" with title \"Claude Code\"'",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  },
+  "enabledPlugins": {
+    "document-skills@anthropic-agent-skills": true,
+    "example-skills@anthropic-agent-skills": true,
+    "claude-api@anthropic-agent-skills": true,
+    "gh-cli@trailofbits": true,
+    "git-cleanup@trailofbits": true,
+    "second-opinion@trailofbits": true,
+    "engineering-skills@claude-code-skills": true,
+    "pw@claude-code-skills": true,
+    "fullstack-engineer@claude-code-skills": true,
+    "a11y-audit@claude-code-skills": true,
+    "content-creator@claude-code-skills": true,
+    "claude-md-management@community-code-plugins": true,
+    "code-review@community-code-plugins": true,
+    "code-simplifier@community-code-plugins": true,
+    "commit-commands@community-code-plugins": true,
+    "feature-dev@community-code-plugins": true,
+    "frontend-design@community-code-plugins": true,
+    "pr-review-toolkit@community-code-plugins": true,
+    "typescript-lsp@community-code-plugins": true,
+    "context7@community-code-plugins": true,
+    "firebase@community-code-plugins": true,
+    "github@community-code-plugins": true,
+    "playwright@community-code-plugins": true,
+    "supabase@community-code-plugins": true,
+    "chrome-devtools-mcp@community-code-plugins": true,
+    "figma@community-code-plugins": true,
+    "firecrawl@community-code-plugins": true,
+    "notion@community-code-plugins": true,
+    "superpowers@community-code-plugins": true,
+    "vercel@community-code-plugins": true,
+    "visual-explainer@visual-explainer-marketplace": true
+  },
+  "extraKnownMarketplaces": {
+    "visual-explainer-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "nicobailon/visual-explainer"
+      }
+    }
+  },
+  "skipDangerousModePermissionPrompt": true,
+  "mcpServers": {
+    "shopify-dev": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@shopify/dev-mcp@latest"
+      ]
+    }
+  }
+}
